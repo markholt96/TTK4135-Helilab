@@ -4,7 +4,7 @@
 
 %% Initialization and model definition
 close
-clear all
+clear
 
 init_simulator; % Change this to the init file corresponding to your helicopter
 
@@ -27,8 +27,16 @@ B1 = delta_t*Bc;
 %       0 0 1 0.25;
 %       0 0 -1.7825 0.1];
 % B1 = [0; 0; 0; 1.685];
+q1 = 2;
+q2 = 0.5;
+q3 = 4;
+q4 = 1;
+Q = diag([q1, q2, q3, q4]);
+R = 0.1;
 
+[~,P] = dlqr(A1,B1,Q,R);
 
+K = 1/R * B1'*P*((eye(4)+B1*(1/R)*B1'*P)\A1);
 %%
 % Number of states and inputs
 mx = size(A1,2); % Number of states (number of columns in A)
@@ -68,7 +76,7 @@ Q1(2,2) = 0;                            % Weight on state x2
 Q1(3,3) = 0;                            % Weight on state x3
 Q1(4,4) = 0;                            % Weight on state x4
 P1 = 10;                               % Weight on input
-Q = gen_q(Q1,P1,N,M);                   % Generate Q, hint: gen_q
+Q1 = gen_q(Q1,P1,N,M);                   % Generate Q, hint: gen_q
 c = 0;                                  % Generate c, this is the linear constant term in the QP
 
 %% Generate system matrixes for linear model
@@ -78,14 +86,14 @@ beq(1) = pi;
 
 %% Solve QP problem with linear model
 tic
-[z,lambda] = quadprog(Q,[],[],[],Aeq,beq,vlb,vub); % hint: quadprog. Type 'doc quadprog' for more info 
+[z,lambda] = quadprog(Q1,[],[],[],Aeq,beq,vlb,vub); % hint: quadprog. Type 'doc quadprog' for more info 
 t1=toc;
 
 % Calculate objective value
 phi1 = 0.0;
 PhiOut = zeros(N*mx+M*mu,1);
 for i=1:N*mx+M*mu
-  phi1=phi1+Q(i,i)*z(i)*z(i);
+  phi1=phi1+Q1(i,i)*z(i)*z(i);
   PhiOut(i) = phi1;
 end
 
@@ -108,10 +116,15 @@ x2  = [zero_padding; x2; zero_padding];
 x3  = [zero_padding; x3; zero_padding];
 x4  = [zero_padding; x4; zero_padding];
 
+
+
 %% Plotting
 t = 0:delta_t:delta_t*(length(u)-1);
 
+
 u = [t' u];
+x_ref = [t' x1 x2 x3 x4];
+save('x_ref.mat', 'x_ref')
 
 figure(2)
 subplot(511)

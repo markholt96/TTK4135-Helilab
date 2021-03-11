@@ -2,7 +2,7 @@ close
 clear
 clc
 
-data = load('heliSimLab2.mat')
+data = load('heliSim.mat')
 time = data.ans(1,:);
 travel = data.ans(2,:);
 travel_rate = data.ans(3,:);

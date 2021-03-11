@@ -3,53 +3,33 @@
 % Updated spring 2018, Andreas L. Flåten
 
 %% Initialization and model definition
-close
-clear all
+initXX; % Change this to the init file corresponding to your helicopter
 
-init_simulator; % Change this to the init file corresponding to your helicopter
-
-% Discretize model
 % Discrete time system model. x = [lambda r p p_dot]'
 delta_t	= 0.25; % sampling time
+A1 = [];
+B1 = [];
 
-Ac = [0 1 0 0;
-     0 0 -K_2 0;
-     0 0 0 1;
-     0 0  -K_1*K_pp -K_1*K_pd];
- 
-Bc = [0; 0; 0; K_1*K_pp];
-
-A1 = eye(4)+delta_t*Ac;
-B1 = delta_t*Bc;
-
-% A1 = [1 0.25 0 0;
-%       0 0.9925 -0.0975 0;
-%       0 0 1 0.25;
-%       0 0 -1.7825 0.1];
-% B1 = [0; 0; 0; 1.685];
-
-
-%%
 % Number of states and inputs
 mx = size(A1,2); % Number of states (number of columns in A)
 mu = size(B1,2); % Number of inputs(number of columns in B)
 
 % Initial values
-x1_0 = pi;                               % Lambda
-x2_0 = 0;                               % r
-x3_0 = 0;                               % p
-x4_0 = 0;                               % p_dot
+x1_0 = ;                               % Lambda
+x2_0 = ;                               % r
+x3_0 = ;                               % p
+x4_0 = ;                               % p_dot
 x0 = [x1_0 x2_0 x3_0 x4_0]';           % Initial values
 
 % Time horizon and initialization
-N  = 100;                                  % Time horizon for states
+N  = ;                                  % Time horizon for states
 M  = N;                                 % Time horizon for inputs
 z  = zeros(N*mx+M*mu,1);                % Initialize z for the whole horizon
 z0 = z;                                 % Initial value for optimization
 
 % Bounds
-ul 	    = -pi/6;                      % Lower bound on control
-uu 	    = pi/6;                   % Upper bound on control
+ul 	    = ;                   % Lower bound on control
+uu 	    = ;                   % Upper bound on control
 
 xl      = -Inf*ones(mx,1);              % Lower bound on states (no bound)
 xu      = Inf*ones(mx,1);               % Upper bound on states (no bound)
@@ -57,28 +37,27 @@ xl(3)   = ul;                           % Lower bound on state x3
 xu(3)   = uu;                           % Upper bound on state x3
 
 % Generate constraints on measurements and inputs
-[vlb,vub]       = gen_constraints(N,M,xl,xu,ul,uu); % hint: gen_constraints
+[vlb,vub]       = ; % hint: gen_constraints
 vlb(N*mx+M*mu)  = 0;                    % We want the last input to be zero
 vub(N*mx+M*mu)  = 0;                    % We want the last input to be zero
 
 % Generate the matrix Q and the vector c (objecitve function weights in the QP problem) 
 Q1 = zeros(mx,mx);
-Q1(1,1) = 1;                            % Weight on state x1
-Q1(2,2) = 0;                            % Weight on state x2
-Q1(3,3) = 0;                            % Weight on state x3
-Q1(4,4) = 0;                            % Weight on state x4
-P1 = 10;                               % Weight on input
-Q = gen_q(Q1,P1,N,M);                   % Generate Q, hint: gen_q
-c = 0;                                  % Generate c, this is the linear constant term in the QP
+Q1(1,1) = ;                            % Weight on state x1
+Q1(2,2) = ;                            % Weight on state x2
+Q1(3,3) = ;                            % Weight on state x3
+Q1(4,4) = ;                            % Weight on state x4
+P1 = 0;                                % Weight on input
+Q = ;                                  % Generate Q, hint: gen_q
+c = ;                                  % Generate c, this is the linear constant term in the QP
 
 %% Generate system matrixes for linear model
-Aeq = gen_aeq(A1,B1,N,mx,mu);             % Generate A, hint: gen_aeq
-beq = zeros(size(Aeq,1),1);                   % Generate b
-beq(1) = pi;
+Aeq = ;             % Generate A, hint: gen_aeq
+beq = ;             % Generate b
 
 %% Solve QP problem with linear model
 tic
-[z,lambda] = quadprog(Q,[],[],[],Aeq,beq,vlb,vub); % hint: quadprog. Type 'doc quadprog' for more info 
+[z,lambda] = ; % hint: quadprog. Type 'doc quadprog' for more info 
 t1=toc;
 
 % Calculate objective value
@@ -102,7 +81,6 @@ zero_padding = zeros(num_variables,1);
 unit_padding  = ones(num_variables,1);
 
 u   = [zero_padding; u; zero_padding];
-
 x1  = [pi*unit_padding; x1; zero_padding];
 x2  = [zero_padding; x2; zero_padding];
 x3  = [zero_padding; x3; zero_padding];
@@ -110,8 +88,6 @@ x4  = [zero_padding; x4; zero_padding];
 
 %% Plotting
 t = 0:delta_t:delta_t*(length(u)-1);
-
-u = [t' u];
 
 figure(2)
 subplot(511)

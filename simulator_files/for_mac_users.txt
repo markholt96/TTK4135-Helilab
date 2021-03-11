@@ -1,0 +1,8 @@
+If you are using mac. You need to compile some of the code. Here is a how-to:
+
+1. Make sure xcode is installed. If not, install it: https://apps.apple.com/no/app/xcode/id497799835?mt=12 
+2. Open Matlab and run in the matlab terminal/interactive window: mex -setup C
+3. Make sure you see "XCode with Clang".
+4. Make sure xdot_c.c is in your current work folder. The easiest way to do this is probably just to run the init_simulator.m file and choose "change folder" when you hit f5.
+5. To compile the c code, run: mex xdot_c.c -largeArrayDims
+6. Now you are good to go. Make sure the new file is in the correct folder.

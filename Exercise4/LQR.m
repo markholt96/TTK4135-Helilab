@@ -39,10 +39,10 @@ q1 = 1;
 q2 = 0;
 q3 = 0;
 q4 = 0;
-q5 =0;
+q5 = 0;
 q6 = 0;
 Q = diag([q1, q2, q3, q4, q5, q6]);
-R = diag([0.1 0.1]);
+R = diag([1 1]);
 
 [~,P] = dlqr(A1,B1,Q,R);
 
@@ -75,24 +75,18 @@ xl      = -Inf*ones(mx,1);              % Lower bound on states (no bound)
 xu      = Inf*ones(mx,1);               % Upper bound on states (no bound)
 xl(3)   = ul(1);                           % Lower bound on state x3
 xu(3)   = uu(1);                           % Upper bound on state x3
+xl(2)   = -pi/8;
+xl(6)  = -pi/8;
+xu(2)   = pi/8;
+xu(6)  = pi/8;
 
 % Generate constraints on measurements and inputs
 [vlb,vub]       = gen_constraints(N,M,xl,xu,ul,uu); % hint: gen_constraints
 vlb(N*mx+M*mu)  = 0;                    % We want the last input to be zero
 vub(N*mx+M*mu)  = 0;                    % We want the last input to be zero
 
-% Generate the matrix Q and the vector c (objecitve function weights in the QP problem) 
-Q1 = zeros(mx,mx);
-Q1(1,1) = 1;                            % Weight on state x1
-Q1(2,2) = 0;                            % Weight on state x2
-Q1(3,3) = 0;                            % Weight on state x3
-Q1(4,4) = 0;                            % Weight on state x4
-Q1(5,5) = 0;                            % Weight on state x5
-Q1(6,6) = 0;                            % Weight on state x6
-P1 = zeros(mu,mu);
-P1(1,1) = 1;                               % Weight on input1
-P1(2,2) = 1;                               % Weight on input2
-Q1 = gen_q(Q1,P1,N,M);                   % Generate Q, hint: gen_q
+
+Q1 = gen_q(Q,R,N,M);                   % Generate Q, hint: gen_q
 
 
 %% Generate system matrixes for linear model
@@ -143,6 +137,7 @@ x6  = [zero_padding; x6; zero_padding];
 
 t = 0:delta_t:(N+2*num_variables)*delta_t;
 x_ref = [t' x1 x2 x3 x4 x5 x6];
+%save('x_ref.mat', 'x_ref')
 u = [t' u1 u2];
 
 %% Plotting

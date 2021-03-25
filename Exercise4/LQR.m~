@@ -35,14 +35,14 @@ A1 = eye(mx) + delta_t*Ac;
 B1 = Bc*delta_t;
 
 
-q1 = 1;
-q2 = 0;
-q3 = 0;
-q4 = 0;
-q5 =0;
-q6 = 0;
+q1 = 2;
+q2 = 0.5;
+q3 = 4;
+q4 = 1;
+q5 = 1;
+q6 = 1;
 Q = diag([q1, q2, q3, q4, q5, q6]);
-R = diag([0.1 0.1]);
+R = diag([1 1]);
 
 [~,P] = dlqr(A1,B1,Q,R);
 
@@ -143,32 +143,29 @@ x6  = [zero_padding; x6; zero_padding];
 
 t = 0:delta_t:(N+2*num_variables)*delta_t;
 x_ref = [t' x1 x2 x3 x4 x5 x6];
-u = [t' u1 u2];
+%u = [t' u1 u2];
 
 %% Plotting
 
 figure(2)
-subplot(421)
+subplot(431)
 stairs(t,u1),grid
 ylabel('u1')
-subplot(422)
-stairs(t,u2),grid
-ylabel('u2')
-subplot(423)
+subplot(432)
 plot(t,x1,'m',t,x1,'mo'),grid
 ylabel('lambda')
-subplot(424)
+subplot(433)
 plot(t,x2,'m',t,x2','mo'),grid
 ylabel('r')
-subplot(425)
+subplot(434)
 plot(t,x3,'m',t,x3,'mo'),grid
 ylabel('p')
-subplot(426)
+subplot(435)
 plot(t,x4,'m',t,x4','mo'),grid
 xlabel('tid (s)'),ylabel('pdot')
-subplot(427)
+subplot(436)
 plot(t,x5,'m',t,x5,'mo'),grid
 ylabel('e')
-subplot(428)
+subplot(437)
 plot(t,x6,'m',t,x6','mo'),grid
 xlabel('tid (s)'),ylabel('edot')

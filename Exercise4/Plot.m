@@ -3,11 +3,11 @@ clear
 clc
 
 %Lab3
-data2 = load('heliSimLab4.mat')
+data2 = load('heliSimLab4_2.mat')
 time = data2.ans(1,:);
 travel = data2.ans(2,:);
 pitch = data2.ans(4,:);
-elevation = data2.ans(5,:);
+elevation = data2.ans(6,:);
 
 %Ref
 data3 = load('x_ref.mat')
@@ -17,7 +17,7 @@ travel_ref = data3.x_ref(2,:)
 travel_ref = rad2deg(travel_ref);
 pitch_ref = data3.x_ref(4,:)
 pitch_ref = rad2deg(pitch_ref);
-elevation_ref = data3.x_ref(5,:);
+elevation_ref = data3.x_ref(6,:);
 elevation_ref = rad2deg(elevation_ref);
 
 

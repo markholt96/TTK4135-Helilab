@@ -75,10 +75,10 @@ xl      = -Inf*ones(mx,1);              % Lower bound on states (no bound)
 xu      = Inf*ones(mx,1);               % Upper bound on states (no bound)
 xl(3)   = ul(1);                           % Lower bound on state x3
 xu(3)   = uu(1);                           % Upper bound on state x3
-xl(2)   = -pi/8;
-xl(6)  = -pi/8;
-xu(2)   = pi/8;
-xu(6)  = pi/8;
+% xl(2)   = -pi/6;
+% xl(6)  = -pi/6;
+% xu(2)   = pi/6;
+% xu(6)  = pi/6;
 
 % Generate constraints on measurements and inputs
 [vlb,vub]       = gen_constraints(N,M,xl,xu,ul,uu); % hint: gen_constraints
